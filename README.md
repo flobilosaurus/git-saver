@@ -1,6 +1,6 @@
 # git-saver
 
-![img|200x200](hero-gopher.svg)
+<img src="https://github.com/flobilosaurus/git-saver/blob/d86adf0751b3a19702fe46d49fc1077bd084d2e9/hero-gopher.svg" width="200" height="200">
 
 Command line tool to ease up process of saving files and folders to git repositories.
 
