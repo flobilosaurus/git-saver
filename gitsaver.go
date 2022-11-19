@@ -13,7 +13,7 @@ import (
 
 var (
 	configFileName       = ".git-saver.config.yaml"
-	defaultCommitMessage = "updated by git-saver"
+	defaultCommitMessage = "updated by https://github.com/flobilosaurus/git-saver"
 	defaultConfigContent = `
 repositories: 
   - localPath: ~/repositories/dotfiles 
