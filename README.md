@@ -4,6 +4,16 @@
 
 Command line tool to ease up process of saving files and folders to git repositories.
 
+## Installation
+
+Make sure `GOPATH` is set and then execute
+
+```shell
+git clone git@github.com:flobilosaurus/git-saver.git
+cd git-saver
+go install
+```
+
 ## Config
 
 To create an initial config with example values in `$HOME/.git-saver.config.yml`.
