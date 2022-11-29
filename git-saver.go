@@ -46,7 +46,7 @@ func SaveAllObjects() {
 	config := ReadConfig(configPath)
 	for _, configRepo := range config.Repositories {
 		repoName := GetEqualPadded(configRepo.LocalPath, 40)
-		processingRepoOutput := fmt.Sprintf("processing repo '%s' -", repoName)
+		processingRepoOutput := fmt.Sprintf("\rprocessing repo '%s' -", repoName)
 		fmt.Printf("%s", processingRepoOutput)
 		repo := OpenRepo(configRepo.LocalPath)
 		Pull(repo)
@@ -56,14 +56,15 @@ func SaveAllObjects() {
 				When: time.Now(),
 			})
 
-			fmt.Printf("\r%s commited ", processingRepoOutput)
+			fmt.Printf("%s commited ", processingRepoOutput)
 		} else {
-			fmt.Printf("\r%s up to date ", processingRepoOutput)
+			fmt.Printf("%s up to date ", processingRepoOutput)
 		}
 		wasPushed := Push(repo)
 		if wasPushed {
-			fmt.Printf("\r%s pushed     \n", processingRepoOutput)
+			fmt.Printf("%s pushed     ", processingRepoOutput)
 		}
+		fmt.Print("\n")
 	}
 }
 
