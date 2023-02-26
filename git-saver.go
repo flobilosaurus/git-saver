@@ -45,20 +45,25 @@ func SaveAllObjects() {
 	configPath := GetConfigPath()
 	config := ReadConfig(configPath)
 	for _, configRepo := range config.Repositories {
-		fmt.Printf("processing repo: %s\n", configRepo.LocalPath)
+		repoName := GetEqualPadded(configRepo.LocalPath, 40)
+		processingRepoOutput := fmt.Sprintf("processing repo '%s' -", repoName)
+		fmt.Printf("%s", processingRepoOutput)
 		repo := OpenRepo(configRepo.LocalPath)
+		Pull(repo)
 		CopyAllObjectsToRepo(configRepo)
 		if HasChanges(repo) {
 			CommitAll(repo, defaultCommitMessage, &object.Signature{
 				When: time.Now(),
 			})
 
-			fmt.Printf("- successfully updated %s\n", configRepo.LocalPath)
+			fmt.Printf("\r%s commited ", processingRepoOutput)
 		} else {
-			fmt.Printf("- already up to date\n")
+			fmt.Printf("\r%s up to date ", processingRepoOutput)
 		}
-		fmt.Printf("- pushing commits\n")
-		Push(repo)
+		wasPushed := Push(repo)
+		if wasPushed {
+			fmt.Printf("\r%s pushed     \n", processingRepoOutput)
+		}
 	}
 }
 

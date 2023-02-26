@@ -66,11 +66,28 @@ func CommitAll(repo *git.Repository, message string, signature *object.Signature
 
 func Pull(repo *git.Repository) {
 	tree := GetWorktree(repo)
-	err := tree.Pull(&git.PullOptions{})
+	publicKeys := GetAuth(repo)
+	err := tree.Pull(&git.PullOptions{RemoteName: "origin", Auth: publicKeys})
 	CheckIfError(err)
 }
 
-func GetAuth(host string) *ssh.PublicKeys {
+func Push(repo *git.Repository) (hasPushed bool) {
+	publicKeys := GetAuth(repo)
+	err := repo.Push(&git.PushOptions{
+		Auth: publicKeys,
+	})
+	if err != nil {
+		if !errors.Is(err, git.NoErrAlreadyUpToDate) {
+			fmt.Printf("error: %s", err)
+		}
+		return false
+	}
+
+	return true
+}
+
+func GetAuth(repo *git.Repository) *ssh.PublicKeys {
+	host := GetHostOfOriginRemote(repo)
 	privateKeyFilepath := ssh_config.Get(host, "IdentityFile")
 	user := ssh_config.Get(host, "User")
 	expandedPath := expand(privateKeyFilepath)
@@ -79,22 +96,10 @@ func GetAuth(host string) *ssh.PublicKeys {
 	return publicKeys
 }
 
-func ExtractHost(remoteUrl string) string {
-	r, _ := regexp.Compile("@(.*)+:")
-	host := r.FindStringSubmatch(remoteUrl)
-	return host[1]
-}
-
-func Push(repo *git.Repository) {
+func GetHostOfOriginRemote(repo *git.Repository) string {
 	cfg, err := repo.Config()
 	CheckIfError(err)
-	host := ExtractHost(cfg.Remotes["origin"].URLs[0])
-	publicKeys := GetAuth(host)
-	err = repo.Push(&git.PushOptions{
-		Auth: publicKeys,
-	})
-
-	if err != nil && !errors.Is(err, git.NoErrAlreadyUpToDate) {
-		fmt.Printf("error: %s", err)
-	}
+	r, _ := regexp.Compile("@(.*)+:")
+	host := r.FindStringSubmatch(cfg.Remotes["origin"].URLs[0])
+	return host[1]
 }
