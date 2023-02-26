@@ -1,6 +1,8 @@
 # git-saver
 
-tool to ease up process of saving files to git repositories.
+![img|200x200](hero-gopher.svg)
+
+Command line tool to ease up process of saving files and folders to git repositories.
 
 ## Config
 
