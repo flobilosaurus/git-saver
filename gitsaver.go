@@ -65,12 +65,16 @@ func SaveAllObjects() {
 func main() {
 	app := &cli.App{
 		Name:  "git-saver",
-		Usage: "single call to commit and push files to configured",
-		Action: func(ctx *cli.Context) error {
-			SaveAllObjects()
-			return nil
-		},
+		Usage: "automates saving files and folders to git repos",
 		Commands: []*cli.Command{
+			{
+				Name:  "save",
+				Usage: "save all configured files to their repositories",
+				Action: func(ctx *cli.Context) error {
+					SaveAllObjects()
+					return nil
+				},
+			},
 			{
 				Name:  "init-config",
 				Usage: "create initial config in users home directory",

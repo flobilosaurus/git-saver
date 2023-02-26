@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"time"
 
 	"github.com/go-git/go-git/v5" // with go modules enabled (GO111MODULE=on or outside GOPATH)
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -52,8 +53,11 @@ func CommitAll(repo *git.Repository, message string, signature *object.Signature
 	_, err := tree.Add(".")
 	CheckIfError(err)
 	commit, err := tree.Commit(message, &git.CommitOptions{
-		All:    true,
-		Author: signature,
+		All: true,
+		Author: &object.Signature{
+			Name: "git-saver",
+			When: time.Now(),
+		},
 	})
 	CheckIfError(err)
 	_, err = repo.CommitObject(commit)
@@ -90,7 +94,7 @@ func Push(repo *git.Repository) {
 		Auth: publicKeys,
 	})
 
-	if !errors.Is(err, git.NoErrAlreadyUpToDate) {
+	if err != nil && !errors.Is(err, git.NoErrAlreadyUpToDate) {
 		fmt.Printf("error: %s", err)
 	}
 }
