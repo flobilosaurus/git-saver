@@ -17,7 +17,7 @@ func CheckIfError(err error) {
 		return
 	}
 
-	fmt.Printf("error: %s", err)
+	fmt.Printf("error aaa: %s", err)
 }
 
 func GetWorktree(repo *git.Repository) *git.Worktree {
@@ -68,7 +68,9 @@ func Pull(repo *git.Repository) {
 	tree := GetWorktree(repo)
 	publicKeys := GetAuth(repo)
 	err := tree.Pull(&git.PullOptions{RemoteName: "origin", Auth: publicKeys})
-	CheckIfError(err)
+	if err != nil && !errors.Is(err, git.NoErrAlreadyUpToDate) {
+		fmt.Printf("error while pulling: %s", err)
+	}
 }
 
 func Push(repo *git.Repository) (hasPushed bool) {
@@ -78,7 +80,7 @@ func Push(repo *git.Repository) (hasPushed bool) {
 	})
 	if err != nil {
 		if !errors.Is(err, git.NoErrAlreadyUpToDate) {
-			fmt.Printf("error: %s", err)
+			fmt.Printf("error000: %s", err)
 		}
 		return false
 	}
